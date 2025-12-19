@@ -1,0 +1,73 @@
+@import "tailwindcss";
+
+@theme {
+  /* ============================================ */
+  /* PRIMARY THEME COLORS - Chỉ cần thay đổi ở đây */
+  /* ============================================ */
+  --color-primary-dark: #9944b5;
+  --color-primary: #8b5dff;
+  --color-primary-light: #7776b3;
+  --color-primary-lightest: #ebeaff;
+  /* ============================================ */
+
+  /* TEXT COLORS */
+  --color-text-primary: #450693; /* Text chính - đậm nhất */
+  --color-text-secondary: #64748b; /* Text phụ - numbers, labels */
+  --color-text-muted: #94a3b8; /* Text mờ - placeholders, hints */
+
+  /* BACKGROUND COLORS */
+  --color-background: #ffffff;
+  --color-background-subtle: #f8fafb; /* Subtle background cho alternating rows */
+
+  /* STATUS COLORS - Success/Warning/Error/Info */
+  --color-success: #10b981; /* Green - thành công */
+  --color-success-light: #6ee7b7;
+  --color-success-dark: #059669;
+
+  --color-warning: #f59e0b; /* Amber/Orange - cảnh báo */
+  --color-warning-light: #fbbf24;
+  --color-warning-dark: #d97706;
+
+  --color-error: #ef4444; /* Red - lỗi */
+  --color-error-light: #f87171;
+  --color-error-dark: #dc2626;
+
+  --color-info: #3b82f6; /* Blue - thông tin */
+  --color-info-light: #60a5fa;
+  --color-info-dark: #2563eb;
+
+  /* EVALUATION GRADE COLORS - Cho badges S/A/B/C */
+  --color-grade-s: #f59e0b; /* Amber cho S */
+  --color-grade-a: #10b981; /* Green cho A */
+  --color-grade-b: #3b82f6; /* Blue cho B */
+  --color-grade-c: #6b7280; /* Gray cho C */
+  --color-grade-completed: #059669; /* Dark green cho 済 */
+}
+
+body {
+  background: var(--color-background);
+  color: var(--color-text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-background-subtle);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-primary-light);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary);
+}

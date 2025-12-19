@@ -1,0 +1,160 @@
+/* Print-specific styles */
+@media print {
+  /* Reset */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Page setup */
+  @page {
+    size: A4;
+    margin: 15mm;
+  }
+
+  /* Hide non-print elements */
+  .no-print,
+  .print\\:hidden {
+    display: none !important;
+  }
+
+  /* Show print-only elements */
+  .print-only,
+  .print\\:block {
+    display: block !important;
+  }
+
+  /* Body reset */
+  body {
+    background: white !important;
+    color: black !important;
+    font-size: 12px !important;
+    line-height: 1.4 !important;
+  }
+
+  /* Container reset */
+  .container,
+  .page-container {
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+  }
+
+  /* Table styles for print */
+  table {
+    border-collapse: collapse !important;
+    width: 100% !important;
+    font-size: 11px !important;
+  }
+
+  th,
+  td {
+    border: 1px solid #333 !important;
+    padding: 4px 6px !important;
+  }
+
+  th {
+    background-color: #e5e5e5 !important;
+    font-weight: bold !important;
+  }
+
+  /* Preserve background colors for important rows */
+  .category-header td,
+  tr.category-header td {
+    background-color: #333 !important;
+    color: white !important;
+  }
+
+  .total-row td,
+  tr.total-row td {
+    background-color: #ff8c00 !important;
+    color: white !important;
+  }
+
+  .grand-total td,
+  tr.grand-total td {
+    background-color: #e74c3c !important;
+    color: white !important;
+  }
+
+  .ai-score {
+    background-color: #e8f5e8 !important;
+  }
+
+  .evaluation {
+    background-color: #fff3cd !important;
+  }
+
+  /* Page breaks */
+  .page-break-before {
+    page-break-before: always !important;
+  }
+
+  .page-break-after {
+    page-break-after: always !important;
+  }
+
+  .avoid-break {
+    page-break-inside: avoid !important;
+  }
+
+  /* Input fields for print */
+  input,
+  textarea {
+    border: none !important;
+    background: transparent !important;
+    padding: 0 !important;
+  }
+
+  input[type='number'],
+  input[type='text'] {
+    -moz-appearance: textfield !important;
+  }
+
+  /* Remove shadows and decorations */
+  .shadow,
+  .shadow-sm,
+  .shadow-md,
+  .shadow-lg,
+  .shadow-xl {
+    box-shadow: none !important;
+  }
+
+  /* Links */
+  a {
+    color: black !important;
+    text-decoration: none !important;
+  }
+
+  /* Headers */
+  h1,
+  h2,
+  h3 {
+    page-break-after: avoid !important;
+  }
+
+  /* Images */
+  img {
+    max-width: 100% !important;
+    page-break-inside: avoid !important;
+  }
+
+  /* Radar chart print */
+  .radar-chart {
+    max-width: 300px !important;
+    margin: 0 auto !important;
+  }
+
+  /* Stats grid print */
+  .stats-grid {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 8px !important;
+  }
+
+  .stat-card {
+    border: 1px solid #ccc !important;
+    padding: 8px !important;
+  }
+}
