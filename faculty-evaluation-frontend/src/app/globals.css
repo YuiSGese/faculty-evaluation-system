@@ -12,8 +12,8 @@
 
   /* TEXT COLORS */
   --color-text-primary: #450693; /* Text chính - đậm nhất */
-  --color-text-secondary: #64748b; /* Text phụ - numbers, labels */
-  --color-text-muted: #94a3b8; /* Text mờ - placeholders, hints */
+  --color-text-secondary: #57607a; /* Text phụ - numbers, labels */
+  --color-text-muted: #6b7991; /* Text mờ - placeholders, hints */
 
   /* BACKGROUND COLORS */
   --color-background: #ffffff;

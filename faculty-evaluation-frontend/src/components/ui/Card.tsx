@@ -6,11 +6,19 @@ import { cn } from "@/utils/cn";
 export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   variant?: "default" | "bordered" | "elevated";
   padding?: "none" | "sm" | "md" | "lg";
+  allowStickyChildren?: boolean;
 }
 
 const Card = React.forwardRef<HTMLDivElement, CardProps>(
   (
-    { className, variant = "default", padding = "md", children, ...props },
+    {
+      className,
+      variant = "default",
+      padding = "md",
+      allowStickyChildren = false,
+      children,
+      ...props
+    },
     ref
   ) => {
     const variants = {
@@ -33,6 +41,7 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
           "rounded-2xl",
           variants[variant],
           paddings[padding],
+          !allowStickyChildren && "overflow-hidden",
           className
         )}
         {...props}

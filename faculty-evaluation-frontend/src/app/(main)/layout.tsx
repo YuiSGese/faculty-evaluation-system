@@ -15,12 +15,12 @@ export default function MainLayout({
       <Sidebar />
 
       {/* Main content area - Always accounts for collapsed sidebar width */}
-      <div className="flex-1 flex flex-col min-h-screen ml-20 transition-all duration-300">
+      <div className="flex-1 flex flex-col h-screen ml-20 transition-all duration-300 overflow-hidden">
         {/* Header - Sticky at top */}
         <Header />
 
         {/* Page content */}
-        <main className="flex-1 p-4 md:p-6 overflow-auto pt-20">
+        <main className="flex-1 px-4 md:px-6 pb-4 md:pb-6 pt-0 overflow-auto">
           {children}
         </main>
       </div>
