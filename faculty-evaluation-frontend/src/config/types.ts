@@ -1,6 +1,6 @@
 // Định nghĩa types cho Faculty Config
 
-export type RoleType = 'fulltime' | 'parttime';
+export type RoleType = "fulltime" | "parttime";
 
 export interface CategoryItem {
   id: string;
@@ -13,6 +13,11 @@ export interface Category {
   items: CategoryItem[];
   hasTotal: boolean;
   totalLabel?: string;
+  /**
+   * Cờ đánh dấu category này không hiển thị trong bảng dữ liệu cuộn thông thường.
+   * Thường dùng cho các category đã được hiển thị ở cột cố định (Sticky) như Basic Info.
+   */
+  isHiddenInTable?: boolean;
 }
 
 export interface RadarConfig {

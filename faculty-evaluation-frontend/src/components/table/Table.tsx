@@ -18,7 +18,12 @@ const Table = React.forwardRef<HTMLTableElement, TableProps>(
       <div className={cn("w-full overflow-x-auto", containerClassName)}>
         <table
           ref={ref}
-          className={cn("w-full border-collapse", "text-sm", className)}
+          className={cn(
+            "w-full text-sm",
+            // Sửa: Thay border-collapse thành border-separate và border-spacing-0
+            "border-separate border-spacing-0",
+            className
+          )}
           {...props}
         >
           {children}

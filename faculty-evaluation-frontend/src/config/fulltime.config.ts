@@ -16,6 +16,7 @@ export const FULLTIME_CONFIG: FacultyConfig = {
         { id: "achievements", name: "業績書" },
       ],
       hasTotal: false,
+      isHiddenInTable: true, // Thêm cờ này để ẩn khỏi bảng
     },
     {
       id: "booksPapers",
