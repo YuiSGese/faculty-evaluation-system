@@ -43,8 +43,8 @@ export function Header({ title = "教員業績評価システム" }: HeaderProps
             <span className="text-white text-sm font-bold">山</span>
           </div>
           <div className="hidden sm:block">
-            <p className="text-sm font-semibold text-primary-dark">山田 太郎</p>
-            <p className="text-xs text-primary">教授</p>
+            <p className="text-sm font-semibold text-text-primary">山田 太郎</p>
+            <p className="text-xs text-text-primary">教授</p>
           </div>
         </div>
       </div>

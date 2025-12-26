@@ -2,7 +2,7 @@ import type { FacultyConfig } from "./types";
 
 export const FULLTIME_CONFIG: FacultyConfig = {
   role: "fulltime",
-  title: "専任教員業績評価表",
+  titlePerformance: "専任教員業績評価表",
   titleScore: "専任教員業績（得点）",
   titleSummary: "専任教員業績（合計）",
   titleRadar: "専任教員の評価",

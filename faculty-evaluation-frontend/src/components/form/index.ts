@@ -1,17 +1,23 @@
-export { InfoSection } from './InfoSection';
-export type { InfoSectionProps, InfoField } from './InfoSection';
+// src/components/form/index.ts
 
-export { YearSelector } from './YearSelector';
-export type { YearSelectorProps } from './YearSelector';
+export { FormField } from "./FormField";
+export type { FormFieldProps } from "./FormField";
 
-export { FormSection } from './FormSection';
-export type { FormSectionProps } from './FormSection';
+export { FormSection } from "./FormSection";
+export type { FormSectionProps } from "./FormSection";
 
-export { FormField } from './FormField';
-export type { FormFieldProps } from './FormField';
+export { InfoSection } from "./InfoSection";
+export type { InfoSectionProps } from "./InfoSection";
 
-export { SignatureSection } from './SignatureSection';
-export type { SignatureSectionProps, SignatureEntry } from './SignatureSection';
+export { YearSelector } from "./YearSelector";
+export type { YearSelectorProps } from "./YearSelector";
 
-export { CommentBox } from './CommentBox';
-export type { CommentBoxProps } from './CommentBox';
+export { SignatureSection } from "./SignatureSection";
+export type { SignatureSectionProps } from "./SignatureSection";
+// ← BỎ SignatureEntry (không tồn tại trong version mới)
+
+export { CommentBox } from "./CommentBox";
+export type { CommentBoxProps } from "./CommentBox";
+
+export { ActionButtons } from "./ActionButtons";
+export type { ActionButtonsProps } from "./ActionButtons";

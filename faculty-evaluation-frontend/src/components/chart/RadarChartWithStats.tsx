@@ -39,12 +39,6 @@ const RadarChartWithStats: React.FC<RadarChartWithStatsProps> = ({
         className
       )}
     >
-      {title && (
-        <h2 className="text-2xl font-bold text-primary-darktext-center mb-6">
-          {title}
-        </h2>
-      )}
-
       {/* Radar Chart */}
       <div className="flex justify-center mb-6">
         <RadarChart
@@ -57,8 +51,8 @@ const RadarChartWithStats: React.FC<RadarChartWithStatsProps> = ({
       {/* Legend */}
       {showLegend && (
         <div className="flex justify-center mb-6">
-          <div className="flex items-center gap-2 text-sm text-primary font-medium">
-            <div className="w-3 h-3 rounded-full bg-primary" />
+          <div className="flex items-center gap-2 text-md text-text-primary font-medium">
+            <div className="w-3 h-3 rounded-full bg-text-primary" />
             <span>{legendLabel}</span>
           </div>
         </div>

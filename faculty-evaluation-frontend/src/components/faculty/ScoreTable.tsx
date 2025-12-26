@@ -1,14 +1,9 @@
 "use client";
 
 import React, { useMemo } from "react";
-import {
-  Table,
-  TableHeader,
-  TableBody,
-  TableRow,
-  TableCell,
-} from "@/components/table";
+// Loại bỏ import Table component để dùng HTML thuần tránh xung đột style
 import { Card } from "@/components/ui/Card";
+import { PageHeader } from "@/components/ui/PageHeader";
 import type { FacultyConfig } from "@/config";
 
 // --- Types & Interfaces ---
@@ -65,15 +60,11 @@ function calcCategoryTotal(
   return items.reduce((sum, item) => sum + (scores[item.id] || 0), 0);
 }
 
-// Hàm tính tổng: Bao gồm cả Resume/Achievements (Sticky) + Các Category khác (Visible)
 function calcGrandTotal(
   faculty: FacultyScoreData,
   visibleCategories: FacultyConfig["categories"]
 ): number {
-  // Luôn cộng Resume và Achievements vì nó nằm ở Sticky Column
   let total = faculty.resume + faculty.achievements;
-
-  // Cộng thêm điểm của các category được hiển thị (Visible)
   visibleCategories.forEach((cat) => {
     total += calcCategoryTotal(faculty.scores, cat.items);
   });
@@ -99,7 +90,6 @@ function generateDummyData(count: number): FacultyScoreData[] {
 }
 
 export function ScoreTable({ config, data }: ScoreTableProps) {
-  // CHUẨN: Lọc categories dựa trên 'isHiddenInTable' từ config
   const visibleCategories = useMemo(() => {
     return config.categories.filter((cat) => !cat.isHiddenInTable);
   }, [config.categories]);
@@ -111,7 +101,9 @@ export function ScoreTable({ config, data }: ScoreTableProps) {
   const getColSpan = (cat: FacultyConfig["categories"][0]) =>
     cat.items.length + (cat.hasTotal ? 1 : 0);
 
-  const getStickyStyle = (col: StickyColConfig, zIndex: number = 20) => ({
+  // Helper tạo style cho Sticky Column
+  // FIX: Giảm default zIndex xuống 10 (thay vì 20) để thấp hơn Sidebar
+  const getStickyStyle = (col: StickyColConfig, zIndex: number = 10) => ({
     width: `${col.width}px`,
     minWidth: `${col.width}px`,
     maxWidth: `${col.width}px`,
@@ -122,93 +114,98 @@ export function ScoreTable({ config, data }: ScoreTableProps) {
     textOrientation: "upright" as const,
     letterSpacing: "1px",
   });
+  const currentYear = new Date().getFullYear();
+
+  // Chiều cao cố định cho dòng header đầu tiên
+  const HEADER_ROW_1_HEIGHT = 42;
 
   return (
     <div className="space-y-6">
-      <div className="border-b border-primary-light/30 pb-4 mt-6">
-        <h1 className="text-3xl font-bold text-text-primary text-center">
-          {config.titleScore}
-        </h1>
-      </div>
+      <PageHeader title={config.titleScore} year={currentYear} />
 
-      <Card
-        variant="elevated"
-        padding="none"
-        allowStickyChildren={true}
-        className="overflow-hidden"
-      >
-        <div className="overflow-x-auto overflow-y-visible max-h-[calc(100vh-200px)]">
-          <Table
-            className="min-w-max border-separate border-spacing-0"
-            containerClassName="overflow-visible"
-          >
-            <TableHeader sticky={false}>
-              <TableRow>
-                {/* STICKY COLUMNS HEADER */}
+      {/* Sử dụng div thường thay vì Card để kiểm soát hoàn toàn border và overflow */}
+      <div className="border border-primary-light/30 rounded-xl bg-white shadow-sm overflow-hidden flex flex-col">
+        {/* CONTAINER SCROLL DUY NHẤT: Xử lý cả cuộn dọc và ngang */}
+        <div className="overflow-auto max-h-[calc(100vh-200px)] w-full relative scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
+          {/* HTML TABLE THUẦN TÚY */}
+          <table className="min-w-max border-separate border-spacing-0 w-full font-sans">
+            <thead className="bg-white">
+              {/* --- HEADER ROW 1 --- */}
+              <tr>
+                {/* 1. STICKY COLUMNS HEADER (Góc trên trái - Cố định cả 2 chiều) */}
                 {STICKY_COLS.map((col) => (
-                  <TableCell
+                  <th
                     key={col.id}
-                    as="th"
                     rowSpan={2}
                     className={`
-                      sticky top-0 
+                      sticky top-0 left-0
                       bg-gradient-to-b from-primary-dark to-primary
                       text-white font-bold 
-                      border-b border-r border-white
-                      shadow-[1px_0_0_0_rgba(255,255,255,0.2)]
+                      border-b border-r border-white/50
+                      shadow-[1px_1px_0_0_rgba(255,255,255,0.2)]
                       align-middle text-center py-4
-                      text-sm
+                      select-none
                       ${
                         col.isLast
                           ? "border-r-4 border-r-white/30 shadow-[4px_0_4px_-2px_rgba(0,0,0,0.1)]"
                           : ""
                       }
+                      ${
+                        col.id === "achievements"
+                          ? "border-t border-white/40"
+                          : ""
+                      }
                     `}
-                    style={getStickyStyle(col, 30)}
+                    // FIX: Giảm zIndex xuống 20 (thay vì 50)
+                    style={{ ...getStickyStyle(col, 20), top: 0 }}
                   >
                     {col.label}
-                  </TableCell>
+                  </th>
                 ))}
 
-                {/* CATEGORIES SUPER-HEADERS (Dùng visibleCategories) */}
+                {/* 2. CATEGORIES SUPER-HEADERS (Sticky Top) */}
                 {visibleCategories.map((cat, idx) => (
-                  <TableCell
+                  <th
                     key={cat.id}
-                    as="th"
                     colSpan={getColSpan(cat)}
                     className={`
-                      sticky top-0 z-20 
+                      sticky top-0
                       bg-gradient-to-r from-primary-dark to-primary
                       text-white font-bold text-sm
-                      border-b border-r border-white
-                      h-[42px]
+                      border-b border-r border-white/50
                       ${idx > 0 ? "border-l-2 border-l-white/20" : ""}
                     `}
+                    // FIX: Giảm zIndex xuống 15 (thay vì 40)
+                    style={{
+                      height: `${HEADER_ROW_1_HEIGHT}px`,
+                      zIndex: 15,
+                    }}
                   >
                     {cat.name}
-                  </TableCell>
+                  </th>
                 ))}
 
-                {/* GRAND TOTAL HEADER */}
-                <TableCell
-                  as="th"
+                {/* 3. GRAND TOTAL HEADER (Sticky Top) */}
+                <th
                   rowSpan={2}
-                  className="sticky top-0 z-20 bg-gradient-to-br from-primary-dark to-primary text-white font-bold text-sm border-l-4 border-l-white/30 border-b border-white"
+                  className="sticky top-0 bg-gradient-to-br from-primary-dark to-primary text-white font-bold text-sm border-l-4 border-l-white/30 border-b border-white/50"
+                  // FIX: Giảm zIndex xuống 15 (thay vì 40)
+                  style={{ zIndex: 15 }}
                 >
                   全体合計
-                </TableCell>
-              </TableRow>
+                </th>
+              </tr>
 
-              <TableRow>
-                {/* CATEGORIES SUB-HEADERS (Dùng visibleCategories) */}
+              {/* --- HEADER ROW 2 --- */}
+              <tr>
+                {/* 4. CATEGORIES SUB-HEADERS (Sticky Top - Dính dưới dòng 1) */}
                 {visibleCategories.map((cat) => (
                   <React.Fragment key={cat.id}>
                     {cat.items.map((item) => (
-                      <TableCell
+                      <th
                         key={item.id}
-                        as="th"
                         className="
-                          sticky top-[42px] z-20 
+                          sticky
                           bg-primary-light/10 backdrop-blur-sm
                           text-text-primary font-semibold 
                           text-sm whitespace-normal break-words leading-tight
@@ -216,45 +213,54 @@ export function ScoreTable({ config, data }: ScoreTableProps) {
                           border-b border-r border-primary-light/20 
                           align-bottom pb-2 px-1
                         "
+                        // FIX: Giảm zIndex xuống 12 (thay vì 30)
+                        style={{
+                          top: `${HEADER_ROW_1_HEIGHT}px`,
+                          zIndex: 12,
+                        }}
                       >
                         {item.name}
-                      </TableCell>
+                      </th>
                     ))}
 
                     {cat.hasTotal && (
-                      <TableCell
-                        as="th"
+                      <th
                         className="
-                          sticky top-[42px] z-20 
+                          sticky
                           bg-primary-lightest 
-                          text-text-primary-dark font-bold 
+                          text-text-primary font-bold 
                           text-sm whitespace-nowrap 
                           border-b border-r border-primary-light/30 
                           align-bottom pb-2 px-2
                         "
+                        // FIX: Giảm zIndex xuống 12 (thay vì 30)
+                        style={{
+                          top: `${HEADER_ROW_1_HEIGHT}px`,
+                          zIndex: 12,
+                        }}
                       >
                         {cat.name}
                         <br />
                         合計
-                      </TableCell>
+                      </th>
                     )}
                   </React.Fragment>
                 ))}
-              </TableRow>
-            </TableHeader>
+              </tr>
+            </thead>
 
-            <TableBody>
+            <tbody className="bg-white">
               {displayData.map((faculty, idx) => {
                 const isEven = idx % 2 === 0;
                 const rowBgColor = isEven ? BG_COLORS.even : BG_COLORS.odd;
                 const rowClass = isEven ? "bg-white" : "bg-background-subtle";
 
                 return (
-                  <TableRow
+                  <tr
                     key={faculty.id}
                     className={`${rowClass} hover:bg-primary-lightest/50 transition-colors group`}
                   >
-                    {/* STICKY DATA CELLS */}
+                    {/* 5. STICKY DATA CELLS (Sticky Left) */}
                     {STICKY_COLS.map((col) => {
                       let value: string | number = "-";
                       if (col.id === "employeeNumber")
@@ -272,13 +278,13 @@ export function ScoreTable({ config, data }: ScoreTableProps) {
                         value = faculty.achievements;
 
                       return (
-                        <TableCell
+                        <td
                           key={col.id}
                           className={`
                             text-sm border-b border-r border-primary-light/20 py-4
                             ${
                               col.id === "employeeName"
-                                ? "font-bold text-text-text-primary-dark"
+                                ? "font-bold text-text-primary"
                                 : "text-text-secondary"
                             }
                             text-center align-middle
@@ -288,46 +294,47 @@ export function ScoreTable({ config, data }: ScoreTableProps) {
                                 : ""
                             }
                           `}
+                          // FIX: Giảm zIndex xuống 10 (thay vì 20)
                           style={{
                             ...getStickyStyle(col, 10),
                             backgroundColor: rowBgColor,
                           }}
                         >
                           <span className="inline-block py-2">{value}</span>
-                        </TableCell>
+                        </td>
                       );
                     })}
 
-                    {/* SCROLLABLE DATA CELLS (Dùng visibleCategories) */}
+                    {/* 6. SCROLLABLE DATA CELLS */}
                     {visibleCategories.map((cat) => (
                       <React.Fragment key={cat.id}>
                         {cat.items.map((item) => (
-                          <TableCell
+                          <td
                             key={item.id}
                             className="text-sm text-center text-text-secondary border-b border-r border-primary-light/20 px-1"
                           >
                             {faculty.scores?.[item.id] || 0}
-                          </TableCell>
+                          </td>
                         ))}
                         {cat.hasTotal && (
-                          <TableCell className="text-sm text-center font-bold bg-primary-lightest text-text-primary-dark border-b border-r border-primary-light/30">
+                          <td className="text-sm text-center font-bold bg-primary-lightest text-text-primary border-b border-r border-primary-light/30">
                             {calcCategoryTotal(faculty.scores || {}, cat.items)}
-                          </TableCell>
+                          </td>
                         )}
                       </React.Fragment>
                     ))}
 
-                    {/* GRAND TOTAL DATA CELL */}
-                    <TableCell className="text-base text-center font-extrabold bg-primary-lightest/50 text-primary-dark border-l-4 border-primary-light/20 border-b">
+                    {/* 7. GRAND TOTAL DATA CELL */}
+                    <td className="text-base text-center font-extrabold bg-primary-lightest/50 text-text-primary border-l-4 border-primary-light/20 border-b">
                       {calcGrandTotal(faculty, visibleCategories)}
-                    </TableCell>
-                  </TableRow>
+                    </td>
+                  </tr>
                 );
               })}
-            </TableBody>
-          </Table>
+            </tbody>
+          </table>
         </div>
-      </Card>
+      </div>
     </div>
   );
 }

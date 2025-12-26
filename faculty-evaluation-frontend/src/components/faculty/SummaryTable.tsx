@@ -8,6 +8,7 @@ import {
   TableRow,
   TableCell,
 } from "@/components/table";
+import { PageHeader } from "@/components/ui/PageHeader";
 import type { FacultyConfig } from "@/config";
 
 // --- Types & Interfaces ---
@@ -80,18 +81,16 @@ export function SummaryTable({ config, data }: SummaryTableProps) {
       : 0;
   const max = allTotals.length > 0 ? Math.max(...allTotals) : 0;
   const min = allTotals.length > 0 ? Math.min(...allTotals) : 0;
-
+  const currentYear = new Date().getFullYear();
   return (
     <div className="space-y-6">
-      {/* Tiêu đề trang */}
-      <div className="border-b border-primary-light/30 pb-4 mt-6">
-        <h1 className="text-2xl font-bold text-text-primary">
-          {config.titleSummary}
-        </h1>
-        <p className="text-text-muted mt-1">
-          {config.role === "fulltime" ? "専任" : "非常勤"}教員の業績合計一覧
-        </p>
-      </div>
+      <PageHeader
+        title={config.titleSummary}
+        // subtitle={`${
+        //   config.role === "fulltime" ? "専任" : "非常勤"
+        // }教員の業績合計一覧`}
+        year={currentYear}
+      />
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

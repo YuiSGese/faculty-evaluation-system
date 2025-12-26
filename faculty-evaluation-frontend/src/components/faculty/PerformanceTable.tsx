@@ -1,8 +1,12 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { Card } from "@/components/ui";
 import { Badge } from "@/components/ui";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { SignatureSection } from "@/components/form/SignatureSection";
+import { ActionButtons } from "@/components/form/ActionButtons";
+
 import type { FacultyConfig } from "@/config";
 
 interface FacultyInfo {
@@ -26,6 +30,16 @@ interface PerformanceTableProps {
   config: FacultyConfig;
   facultyInfo: FacultyInfo;
   scores: Record<string, ScoreData>;
+  role?: "faculty" | "manager" | "admin";
+  // Signature props (optional - use internal state if not provided)
+  evaluatorPosition?: string;
+  evaluatorName?: string;
+  signatureDate?: { year: string; month: string; day: string };
+  onSignatureChange?: (
+    field: string,
+    value: string | { year: string; month: string; day: string }
+  ) => void;
+  onSubmit?: () => void;
 }
 
 function InfoSection({ info }: { info: FacultyInfo }) {
@@ -90,7 +104,59 @@ export function PerformanceTable({
   config,
   facultyInfo,
   scores,
+  role = "faculty",
+  // Signature props with defaults
+  evaluatorPosition: propEvaluatorPosition,
+  evaluatorName: propEvaluatorName,
+  signatureDate: propSignatureDate,
+  onSignatureChange,
+  onSubmit,
 }: PerformanceTableProps) {
+  // Internal state for signature (fallback if props not provided)
+  const [internalSignature, setInternalSignature] = useState({
+    evaluatorPosition: propEvaluatorPosition || "学部長",
+    evaluatorName: propEvaluatorName || "佐藤 一郎",
+    signatureDate: propSignatureDate || { year: "", month: "", day: "" },
+  });
+
+  // Use props if provided, otherwise use internal state
+  const signatureData = {
+    evaluatorPosition:
+      propEvaluatorPosition ?? internalSignature.evaluatorPosition,
+    evaluatorName: propEvaluatorName ?? internalSignature.evaluatorName,
+    signatureDate: propSignatureDate ?? internalSignature.signatureDate,
+  };
+
+  // Handle signature change
+  const handleSignatureChange = (
+    field: string,
+    value: string | { year: string; month: string; day: string }
+  ) => {
+    if (onSignatureChange) {
+      // Use parent handler if provided (for API integration)
+      onSignatureChange(field, value);
+    } else {
+      // Use internal state (for mock data)
+      setInternalSignature((prev) => ({ ...prev, [field]: value }));
+    }
+  };
+
+  // Handle submit
+  const handleSubmit = () => {
+    if (onSubmit) {
+      // Use parent handler if provided
+      onSubmit();
+    } else {
+      // Default action (for mock data)
+      console.log("Submit performance data:", {
+        facultyInfo,
+        scores,
+        signature: signatureData,
+      });
+      alert("Performance data submitted!");
+    }
+  };
+
   const allItems = config.categories.flatMap((c) => c.items);
   const grandTotals = {
     prevPrevYear: calcTotal(allItems, scores, "prevPrevYear"),
@@ -98,15 +164,11 @@ export function PerformanceTable({
     aiScore: calcTotal(allItems, scores, "aiScore"),
     aiScoreThisYear: calcTotal(allItems, scores, "aiScoreThisYear"),
   };
+  const currentYear = new Date().getFullYear();
 
   return (
     <div className="space-y-6">
-      {/* Page Title */}
-      <div className="border-b border-primary-light/30 pb-4">
-        <h1 className="text-3xl font-bold text-text-primary text-center">
-          {config.title}
-        </h1>
-      </div>
+      <PageHeader title={config.titlePerformance} year={currentYear} />
 
       {/* Faculty Info */}
       <InfoSection info={facultyInfo} />
@@ -117,25 +179,25 @@ export function PerformanceTable({
           <table className="w-full text-sm">
             <thead className="sticky top-0 z-30 bg-gradient-to-r from-primary-dark to-primary text-white font-bold shadow-md">
               <tr>
-                <th className="px-5 py-3 text-center font-semibold w-32 border-r border-white">
+                <th className="px-5 py-3 text-center font-semibold w-32 border-r border-white/50">
                   区分
                 </th>
-                <th className="px-5 py-3 text-center font-semibold w-44 border-r border-white">
+                <th className="px-5 py-3 text-center font-semibold w-44 border-r border-white/50">
                   評価項目
                 </th>
-                <th className="px-4 py-3 text-center font-semibold w-24 border-r border-white">
+                <th className="px-4 py-3 text-center font-semibold w-24 border-r border-white/50">
                   前々年度
                 </th>
-                <th className="px-4 py-3 text-center font-semibold w-24 border-r border-white">
+                <th className="px-4 py-3 text-center font-semibold w-24 border-r border-white/50">
                   前年度
                 </th>
-                <th className="px-4 py-3 text-center font-semibold w-28 border-r border-white">
+                <th className="px-4 py-3 text-center font-semibold w-28 border-r border-white/50">
                   AIスコア
                 </th>
-                <th className="px-4 py-3 text-center font-semibold w-32 border-r border-white">
+                <th className="px-4 py-3 text-center font-semibold w-32 border-r border-white/50">
                   今年度AIスコア
                 </th>
-                <th className="px-4 py-3 text-center font-semibold w-28 border-r border-white">
+                <th className="px-4 py-3 text-center font-semibold w-28 border-r border-white/50">
                   今年度評価
                 </th>
                 <th className="px-5 py-3 text-center font-semibold">
@@ -265,43 +327,24 @@ export function PerformanceTable({
         </div>
       </Card>
 
-      {/* Evaluator Card */}
-      <div className="max-w-md mx-auto">
-        <Card variant="bordered" padding="md">
-          <h3 className="text-center font-bold text-text-primary mb-6 pb-3 border-b-2 border-primary-light/50">
-            評価者
-          </h3>
-          <div className="space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-primary-light/20">
-              <span className="text-sm text-text-muted font-medium">
-                役職名
-              </span>
-              <span className="text-sm font-semibold text-text-secondary">
-                氏　名
-              </span>
-            </div>
-            <div className="flex items-center justify-between py-3 border-b border-primary-light/20">
-              <span className="text-sm text-text-secondary">学部長</span>
-              <span className="text-base font-bold text-text-primary">
-                佐藤 一郎
-              </span>
-            </div>
-            <div className="text-center text-text-muted text-sm pt-2">
-              令和＿＿年＿＿月＿＿日
-            </div>
-          </div>
-        </Card>
-      </div>
-
+      {/* Signature Section - Only show for Manager role */}
+      {/* {role === "manager" && (
+        
+      )} */}
+      <SignatureSection
+        evaluatorPosition={signatureData.evaluatorPosition}
+        evaluatorName={signatureData.evaluatorName}
+        signatureDate={signatureData.signatureDate}
+        onChange={handleSignatureChange}
+        readonly={false}
+      />
       {/* Action Buttons */}
-      <div className="flex justify-center gap-4">
-        <button className="px-8 py-3 text-sm font-semibold text-text-secondary bg-white border-2 border-primary-light/30 rounded-xl hover:bg-background-subtle hover:border-primary-light transition-all shadow-sm">
-          印刷
-        </button>
-        <button className="px-8 py-3 text-sm font-semibold text-white bg-gradient-to-r from-primary-dark to-primary rounded-xl hover:shadow-lg transition-all shadow-md">
-          確定
-        </button>
-      </div>
+      <ActionButtons
+        onPrint={() => window.print()}
+        onSubmit={handleSubmit}
+        submitLabel={role === "faculty" ? "提出" : "確定"}
+        showSave={false}
+      />
     </div>
   );
 }

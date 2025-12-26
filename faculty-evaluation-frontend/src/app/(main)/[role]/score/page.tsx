@@ -3,7 +3,6 @@ import { getConfigByRole } from "@/config";
 import { MOCK_SCORE_DATA } from "@/data/mock-data";
 import type { RoleType } from "@/config";
 import { notFound } from "next/navigation";
-
 type Props = {
   params: Promise<{ role: string }>;
 };

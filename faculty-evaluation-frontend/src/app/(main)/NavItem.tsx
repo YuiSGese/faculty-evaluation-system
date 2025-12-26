@@ -25,7 +25,7 @@ function NavItem({ item, isExpanded, openDropdown, toggleMenu }: NavItemProps) {
   const hasChildren = !!item.children?.length;
 
   const baseClasses =
-    "flex items-center justify-between w-full px-3 py-2.5 rounded-xl text-slate-700 hover:bg-primary-lightest hover:text-primary transition-all";
+    "flex items-center justify-between w-full px-3 py-2.5 rounded-xl text-slate-700 transition-all";
 
   // Single item without children
   if (!hasChildren && item.href) {
@@ -36,8 +36,9 @@ function NavItem({ item, isExpanded, openDropdown, toggleMenu }: NavItemProps) {
         href={item.href}
         className={cn(
           baseClasses,
-          isActive &&
-            "bg-gradient-to-r from-primary-dark to-primary text-white font-semibold shadow-md"
+          isActive
+            ? "bg-gradient-to-r from-primary-dark to-primary text-white font-semibold shadow-md hover:from-primary hover:to-primary-light"
+            : "hover:bg-primary-lightest hover:text-primary"
         )}
       >
         <div className="flex items-center gap-3">
@@ -68,8 +69,9 @@ function NavItem({ item, isExpanded, openDropdown, toggleMenu }: NavItemProps) {
         onClick={() => toggleMenu(item.label)}
         className={cn(
           baseClasses,
-          (isOpen || isActive) &&
-            "bg-gradient-to-r from-primary-dark to-primary text-white font-semibold shadow-md"
+          isOpen || isActive
+            ? "bg-gradient-to-r from-primary-dark to-primary text-white font-semibold shadow-md hover:from-primary hover:to-primary-light"
+            : "hover:bg-primary-lightest hover:text-text-primary"
         )}
       >
         <div className="flex items-center gap-3">
@@ -116,7 +118,7 @@ function NavItem({ item, isExpanded, openDropdown, toggleMenu }: NavItemProps) {
                   "block px-3 py-2 text-sm rounded-lg transition-all",
                   isChildActive
                     ? "text-primary font-semibold bg-primary-light/30 border-l-2 border-primary"
-                    : "text-text-secondary hover:bg-primary-lightest hover:text-primary"
+                    : "text-text-secondary hover:bg-primary-lightest hover:text-text-primary"
                 )}
               >
                 {sub.label}

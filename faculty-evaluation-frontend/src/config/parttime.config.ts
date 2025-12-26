@@ -1,8 +1,9 @@
+// src/config/parttime.config.ts
 import type { FacultyConfig } from "./types";
 
 export const PARTTIME_CONFIG: FacultyConfig = {
   role: "parttime",
-  title: "非常勤教員業績評価表",
+  titlePerformance: "非常勤教員業績評価表",
   titleScore: "非常勤教員業績（得点）",
   titleSummary: "非常勤教員業績（合計）",
   titleRadar: "非常勤教員の評価",

@@ -18,7 +18,8 @@ export type {
   CardContentProps,
   CardFooterProps,
 } from "./Card";
-
+// src/components/ui/index.ts
+export { PageHeader } from "./PageHeader";
 export { Badge } from "./Badge";
 export type { BadgeProps } from "./Badge";
 

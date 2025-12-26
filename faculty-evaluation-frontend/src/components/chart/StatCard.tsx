@@ -41,7 +41,7 @@ const StatCard: React.FC<StatCardProps> = ({
 
   const labelColors = {
     default: "text-slate-600",
-    primary: "text-primary",
+    primary: "text-text-primary",
     success: "text-success-dark",
     warning: "text-warning-dark",
   };

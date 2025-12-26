@@ -193,7 +193,7 @@ const RadarChart: React.FC<RadarChartProps> = ({
                 y={label.y}
                 textAnchor="middle"
                 dominantBaseline="middle"
-                className="text-sm font-semibold fill-primary-dark"
+                className="text-sm font-semibold fill-text-primary"
               >
                 {label.name}
               </text>
