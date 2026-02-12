@@ -11,6 +11,7 @@ interface PersonalConfig {
   title: string;
   scoreDefinitions: ScoreDefinition[];
   instructionSteps: string[];
+  instructionNote?: string; // Thêm trường này (optional)
 }
 
 export const PERSONAL_EVALUATION_CONFIG: PersonalConfig = {
@@ -53,4 +54,7 @@ export const PERSONAL_EVALUATION_CONFIG: PersonalConfig = {
     "期末：「個人目標進捗度（期末）」に最終実績・達成度・理由を180文字以内で記入。",
     "期末：「評価対象者１年間の振り返りコメント」に年間総括（最大250文字）。",
   ],
+
+  // Nội dung dòng lưu ý mới của bạn
+  instructionNote: "評価者は期末に個別評点を記入し、「評価者名」に役職・氏名・面談日を記入。"
 };

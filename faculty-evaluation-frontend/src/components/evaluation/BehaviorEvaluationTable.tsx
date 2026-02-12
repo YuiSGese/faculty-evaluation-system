@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { IconChevronDown, IconChevronUp } from "@tabler/icons-react";
 import { Card, Badge } from "@/components/ui";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SignatureSection } from "@/components/form/SignatureSection";
@@ -115,6 +116,8 @@ export function BehaviorEvaluationTable({
 
   // State for items
   const [items, setItems] = useState(data.items);
+  // State for Instructions toggle
+  const [showInstructions, setShowInstructions] = useState(false);
 
   // Signature state
   const [signature, setSignature] = useState({
@@ -170,6 +173,32 @@ export function BehaviorEvaluationTable({
       {/* Page Header */}
       <PageHeader title={config.title} year={data.year} />
 
+      {/* Instructions Section (Moved to Top & Collapsible) */}
+      <div className="border border-primary-light/30 rounded-lg overflow-hidden bg-white shadow-sm">
+        <button
+          onClick={() => setShowInstructions(!showInstructions)}
+          className="w-full flex items-center justify-between p-4 bg-background-subtle hover:bg-primary-light/10 transition-colors"
+        >
+          <div className="flex items-center gap-2">
+            <span className="font-semibold text-text-primary text-sm">記入方法について</span>
+          </div>
+          {showInstructions ? (
+            <IconChevronUp size={20} className="text-text-secondary" />
+          ) : (
+            <IconChevronDown size={20} className="text-text-secondary" />
+          )}
+        </button>
+        
+        {showInstructions && (
+          <div className="p-4 border-t border-primary-light/30 bg-white">
+            <div className="space-y-2 text-sm text-text-secondary">
+               <p>各評価項目について、1～4の4段階で自己評価を行ってください。</p>
+               <p>評価基準については、上記の表を参照してください。</p>
+            </div>
+          </div>
+        )}
+      </div>
+
       {/* Info + Rating Scale */}
       <InfoAndRatingSection data={data} />
 
@@ -200,69 +229,77 @@ export function BehaviorEvaluationTable({
               </tr>
             </thead>
             <tbody>
-              {items.map((item, index) => (
-                <tr
-                  key={item.id}
-                  className="hover:bg-background-subtle transition-colors border-b border-primary-light/30"
-                >
-                  {/* 評価項目 */}
-                  <td className="px-3 py-3 text-text-secondary border-r border-primary-light/30">
-                    {item.text}
-                  </td>
+              {items.map((item, index) => {
+                // ƯU TIÊN LẤY TEXT TỪ CONFIG
+                // Tìm item tương ứng trong config dựa vào ID để lấy text mới nhất (có số ①...)
+                const configItem = config.items.find((c) => c.id === item.id);
+                // Nếu tìm thấy trong config thì dùng, không thì dùng text từ data cũ
+                const displayText = configItem ? configItem.text : item.text;
 
-                  {/* 自己評価 - Dropdown */}
-                  <td className="px-3 py-3 text-center border-r border-primary-light/30">
-                    <select
-                      className="w-full px-2 py-1 border border-primary-light/30 rounded text-center text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-                      value={item.selfScore || ""}
-                      onChange={(e) =>
-                        handleItemChange(index, "selfScore", e.target.value)
-                      }
-                      disabled={role !== "faculty"}
-                    >
-                      <option value="">-</option>
-                      <option value="1">1</option>
-                      <option value="2">2</option>
-                      <option value="3">3</option>
-                      <option value="4">4</option>
-                    </select>
-                  </td>
+                return (
+                  <tr
+                    key={item.id}
+                    className="hover:bg-background-subtle transition-colors border-b border-primary-light/30"
+                  >
+                    {/* 評価項目 */}
+                    <td className="px-3 py-3 text-text-secondary border-r border-primary-light/30">
+                      {displayText}
+                    </td>
 
-                  {/* AIスコア - Readonly */}
-                  <td className="px-3 py-3 text-center text-primary font-semibold border-r border-primary-light/30">
-                    {item.aiScore}
-                  </td>
+                    {/* 自己評価 - Dropdown */}
+                    <td className="px-3 py-3 text-center border-r border-primary-light/30">
+                      <select
+                        className="w-full px-2 py-1 border border-primary-light/30 rounded text-center text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                        value={item.selfScore || ""}
+                        onChange={(e) =>
+                          handleItemChange(index, "selfScore", e.target.value)
+                        }
+                        disabled={role !== "faculty"}
+                      >
+                        <option value="">-</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                      </select>
+                    </td>
 
-                  {/* AI評価 - Badge */}
-                  <td className="px-3 py-3 text-center border-r border-primary-light/30">
-                    <Badge variant={getScoreBadgeVariant(item.aiEvaluation)}>
-                      {item.aiEvaluation}
-                    </Badge>
-                  </td>
+                    {/* AIスコア - Readonly */}
+                    <td className="px-3 py-3 text-center text-primary font-semibold border-r border-primary-light/30">
+                      {item.aiScore}
+                    </td>
 
-                  {/* 評価 - Dropdown (Always editable, no role check) */}
-                  <td className="px-3 py-3 text-center border-r border-primary-light/30">
-                    <select
-                      className="w-full px-2 py-1 border border-primary-light/30 rounded text-center text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-                      value={item.evaluation || ""}
-                      onChange={(e) =>
-                        handleItemChange(index, "evaluation", e.target.value)
-                      }
-                    >
-                      <option value="">-</option>
-                      <option value="1">1</option>
-                      <option value="2">2</option>
-                      <option value="3">3</option>
-                      <option value="4">4</option>
-                    </select>
-                  </td>
+                    {/* AI評価 - Badge */}
+                    <td className="px-3 py-3 text-center border-r border-primary-light/30">
+                      <Badge variant={getScoreBadgeVariant(item.aiEvaluation)}>
+                        {item.aiEvaluation}
+                      </Badge>
+                    </td>
 
-                  {/* AI評価概要 - Readonly */}
-                  <td className="px-3 py-3 text-text-muted text-xs">
-                    {item.aiSummary}
-                  </td>
-                </tr>
-              ))}
+                    {/* 評価 - Dropdown (Always editable, no role check) */}
+                    <td className="px-3 py-3 text-center border-r border-primary-light/30">
+                      <select
+                        className="w-full px-2 py-1 border border-primary-light/30 rounded text-center text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                        value={item.evaluation || ""}
+                        onChange={(e) =>
+                          handleItemChange(index, "evaluation", e.target.value)
+                        }
+                      >
+                        <option value="">-</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                      </select>
+                    </td>
+
+                    {/* AI評価概要 - Readonly */}
+                    <td className="px-3 py-3 text-text-muted text-xs">
+                      {item.aiSummary}
+                    </td>
+                  </tr>
+                );
+              })}
 
               {/* Total Row */}
               <tr className="bg-primary-lightest border-t-2 border-primary-light/50">
@@ -287,17 +324,6 @@ export function BehaviorEvaluationTable({
           </table>
         </div>
       </Card>
-
-      {/* Instructions */}
-      <div className="border border-primary-dark bg-background-subtle p-4 rounded">
-        <h3 className="font-semibold text-text-primary mb-3 text-sm">
-          記入方法について
-        </h3>
-        <div className="space-y-2 text-sm text-text-secondary">
-          <p>各評価項目について、1～4の4段階で自己評価を行ってください。</p>
-          <p>評価基準については、上記の表を参照してください。</p>
-        </div>
-      </div>
 
       {/* Signature Section */}
       <SignatureSection

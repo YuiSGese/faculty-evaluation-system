@@ -7,6 +7,7 @@ export interface InstructionsBoxProps {
   title?: string;
   items: string[];
   footer?: string;
+  note?: string; // [Thêm mới] Prop để nhận nội dung ghi chú
   variant?: "default" | "bordered" | "highlighted";
   numbered?: boolean;
   className?: string;
@@ -16,6 +17,7 @@ const InstructionsBox: React.FC<InstructionsBoxProps> = ({
   title = "内容の記入方法について",
   items,
   footer,
+  note, // [Thêm mới]
   variant = "default",
   numbered = true,
   className,
@@ -50,6 +52,14 @@ const InstructionsBox: React.FC<InstructionsBoxProps> = ({
         </ul>
       )}
 
+      {/* [Thêm mới] Phần hiển thị Note: margin-top nhưng không có border */}
+      {note && (
+        <p className="mt-4 text-sm text-text-secondary pl-1">
+          {note}
+        </p>
+      )}
+
+      {/* Phần Footer cũ: có border-t */}
       {footer && (
         <p className="mt-4 text-sm text-text-secondary border-t border-primary-light/20 pt-3">
           {footer}
