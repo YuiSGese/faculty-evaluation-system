@@ -6,11 +6,11 @@ import {
 } from "@tabler/icons-react";
 
 const navItemList = [
-  {
-    label: "ダッシュボード",
-    icon: IconHome,
-    href: "/dashboard",
-  },
+  // {
+  //   label: "ダッシュボード",
+  //   icon: IconHome,
+  //   href: "/dashboard",
+  // },
   {
     label: "専任教員",
     icon: IconUsers,
