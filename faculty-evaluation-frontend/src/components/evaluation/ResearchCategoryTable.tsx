@@ -82,7 +82,7 @@ export function ResearchCategoryTable({
                   onClick={onImportCSV}
                   className="h-7 text-xs bg-white/90 hover:bg-white text-primary-dark border-transparent gap-1 shadow-sm"
                 >
-                  <IconUpload size={14} /> CSV取込
+                  <IconUpload size={14} /> ファイル取込
                 </Button>
               </>
             )}

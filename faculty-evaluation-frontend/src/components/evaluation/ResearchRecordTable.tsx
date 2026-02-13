@@ -284,7 +284,7 @@ export function ResearchRecordTable({
         onChange={handleCSVFileChange}
       />
 
-      <div className="border border-primary-light/30 rounded-lg overflow-hidden bg-white shadow-sm mb-6">
+      {/* <div className="border border-primary-light/30 rounded-lg overflow-hidden bg-white shadow-sm mb-6">
         <button
           onClick={() => setShowInstructions(!showInstructions)}
           className="w-full flex items-center justify-between p-4 bg-background-subtle hover:bg-primary-light/10 transition-colors"
@@ -308,7 +308,7 @@ export function ResearchRecordTable({
             </div>
           </div>
         )}
-      </div>
+      </div> */}
 
       <InfoSection data={data} />
 
@@ -396,7 +396,7 @@ export function ResearchRecordTable({
                   onClick={handleImportCSVClick}
                   className="h-7 text-xs bg-white/90 hover:bg-white text-primary-dark border-transparent gap-1"
                 >
-                  <IconUpload size={14} /> CSV取込
+                  <IconUpload size={14} /> ファイル取込
                 </Button>
               </div>
             )}
