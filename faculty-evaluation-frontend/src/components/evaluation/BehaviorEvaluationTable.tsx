@@ -130,7 +130,7 @@ export function BehaviorEvaluationTable({
   const handleItemChange = (
     itemIndex: number,
     field: "selfScore" | "evaluation",
-    value: string
+    value: string,
   ) => {
     setItems((prev) => {
       const newItems = [...prev];
@@ -145,20 +145,20 @@ export function BehaviorEvaluationTable({
   // Calculate totals
   const totalSelfScore = items.reduce(
     (sum, item) => sum + (item.selfScore || 0),
-    0
+    0,
   );
   const totalAiScore = items.reduce(
     (sum, item) => sum + (item.aiScore || 0),
-    0
+    0,
   );
   const totalEvaluation = items.reduce(
     (sum, item) => sum + (item.evaluation || 0),
-    0
+    0,
   );
 
   const handleSignatureChange = (
     field: string,
-    value: string | { year: string; month: string; day: string }
+    value: string | { year: string; month: string; day: string },
   ) => {
     setSignature((prev) => ({ ...prev, [field]: value }));
   };
@@ -180,7 +180,9 @@ export function BehaviorEvaluationTable({
           className="w-full flex items-center justify-between p-4 bg-background-subtle hover:bg-primary-light/10 transition-colors"
         >
           <div className="flex items-center gap-2">
-            <span className="font-semibold text-text-primary text-sm">記入方法について</span>
+            <span className="font-semibold text-text-primary text-sm">
+              記入方法について
+            </span>
           </div>
           {showInstructions ? (
             <IconChevronUp size={20} className="text-text-secondary" />
@@ -188,12 +190,12 @@ export function BehaviorEvaluationTable({
             <IconChevronDown size={20} className="text-text-secondary" />
           )}
         </button>
-        
+
         {showInstructions && (
           <div className="p-4 border-t border-primary-light/30 bg-white">
             <div className="space-y-2 text-sm text-text-secondary">
-               <p>各評価項目について、1～4の4段階で自己評価を行ってください。</p>
-               <p>評価基準については、上記の表を参照してください。</p>
+              <p>各評価項目について、1～4の4段階で自己評価を行ってください。</p>
+              <p>評価基準については、上記の表を参照してください。</p>
             </div>
           </div>
         )}
