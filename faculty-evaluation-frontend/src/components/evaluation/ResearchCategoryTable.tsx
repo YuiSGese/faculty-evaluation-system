@@ -155,8 +155,8 @@ export function ResearchCategoryTable({
                   {/* Summary Column - Use description as placeholder */}
                   <td className="px-3 py-2 border-r border-primary-light/20 align-top">
                     <textarea
-                      rows={4} // <--- [1] Tăng số này lên (ví dụ: 4) để ô cao hơn mặc định
-                      className="w-full px-2 py-1.5 border border-primary-light/30 rounded text-sm resize-y focus:outline-none focus:ring-2 focus:ring-primary bg-white min-h-[100px]" // <--- [2] Tăng min-h-[50px] lên min-h-[100px] nếu muốn
+                      rows={2} // <--- [1] Tăng số này lên (ví dụ: 4) để ô cao hơn mặc định
+                      className="w-full px-2 py-1.5 border border-primary-light/30 rounded text-sm resize-y focus:outline-none focus:ring-2 focus:ring-primary bg-white min-h-[70px]" // <--- [2] Tăng min-h-[50px] lên min-h-[100px] nếu muốn
                       placeholder={description || "概要を入力"}
                       value={item.summary}
                       onChange={(e) =>
