@@ -9,35 +9,23 @@ export const MOCK_RESEARCH_RECORD: ResearchRecordData = {
   },
   year: 2025,
 
-  // Section 1: 教育上の能力 (4 categories × 2 rows each - ALL EMPTY)
+  // Section 1: 教育上の能力 (4 categories × 1 row each - CHANGED FROM 2 TO 1)
   educationRecords: [
     {
-      category: "1.1教育方法の実践例",
-      items: [
-        { title: "", date: "", summary: "" },
-        { title: "", date: "", summary: "" },
-      ],
+      category: "1.1 教育方法の実践例",
+      items: [{ title: "", date: "", summary: "" }],
     },
     {
       category: "1.2 作成した教科書・教材",
-      items: [
-        { title: "", date: "", summary: "" },
-        { title: "", date: "", summary: "" },
-      ],
+      items: [{ title: "", date: "", summary: "" }],
     },
     {
       category: "1.3 当該教員の教育上の能力に関する大学の評価",
-      items: [
-        { title: "", date: "", summary: "" },
-        { title: "", date: "", summary: "" },
-      ],
+      items: [{ title: "", date: "", summary: "" }],
     },
     {
       category: "1.4 その他",
-      items: [
-        { title: "", date: "", summary: "" },
-        { title: "", date: "", summary: "" },
-      ],
+      items: [{ title: "", date: "", summary: "" }],
     },
   ],
 

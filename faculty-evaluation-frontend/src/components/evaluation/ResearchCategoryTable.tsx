@@ -9,12 +9,12 @@ export interface ResearchRowItem {
   id: string;
   date: string;
   summary: string;
-  title?: string;
+  title?: string; // Used for "項目" column
 }
 
 interface ResearchCategoryTableProps {
   title: string;
-  description?: string;
+  description?: string; // This will now be used as placeholder for Summary
   items: ResearchRowItem[];
   onAddRow: (count: number) => void;
   onRemoveRow: (index: number) => void;
@@ -23,7 +23,7 @@ interface ResearchCategoryTableProps {
     field: keyof ResearchRowItem,
     value: string,
   ) => void;
-  onImportCSV?: () => void; // Thêm prop import
+  onImportCSV?: () => void;
   readOnly?: boolean;
 }
 
@@ -45,16 +45,11 @@ export function ResearchCategoryTable({
     >
       {/* --- Custom Header (Gradient Style) --- */}
       <div className="sticky top-0 z-10 bg-gradient-to-r from-primary-dark to-primary border-b border-primary-light/20 p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-md">
-        {/* Left: Title & Description */}
+        {/* Left: Title (Description removed from here) */}
         <div className="flex-1">
           <h4 className="font-bold text-white text-sm flex items-center gap-2">
             {title}
           </h4>
-          {description && (
-            <p className="text-xs text-white/80 mt-1 whitespace-pre-line leading-relaxed">
-              {description}
-            </p>
-          )}
         </div>
 
         {/* Right: Action Buttons */}
@@ -100,6 +95,9 @@ export function ResearchCategoryTable({
         <table className="w-full text-sm">
           <thead className="bg-background-subtle text-text-secondary text-xs border-b border-primary-light/30">
             <tr>
+              <th className="px-3 py-2 text-left font-medium w-[25%] border-r border-primary-light/20">
+                項目
+              </th>
               <th className="px-3 py-2 text-center font-medium w-[160px] border-r border-primary-light/20">
                 年月日
               </th>
@@ -117,7 +115,7 @@ export function ResearchCategoryTable({
             {items.length === 0 ? (
               <tr>
                 <td
-                  colSpan={readOnly ? 2 : 3}
+                  colSpan={readOnly ? 3 : 4}
                   className="px-4 py-8 text-center text-text-muted text-xs italic"
                 >
                   データがありません。「行追加」ボタンから入力を開始してください。
@@ -129,6 +127,20 @@ export function ResearchCategoryTable({
                   key={item.id}
                   className="group border-b border-primary-light/20 hover:bg-primary-lightest/10 transition-colors"
                 >
+                  {/* Item (Title) Column - Added */}
+                  <td className="px-3 py-2 border-r border-primary-light/20 align-top">
+                    <input
+                      type="text"
+                      className="w-full px-2 py-1.5 border border-primary-light/30 rounded text-sm focus:outline-none focus:ring-2 focus:ring-primary bg-white"
+                      placeholder="項目を入力"
+                      value={item.title || ""}
+                      onChange={(e) =>
+                        onRowChange(idx, "title", e.target.value)
+                      }
+                      disabled={readOnly}
+                    />
+                  </td>
+
                   {/* Date Column */}
                   <td className="px-3 py-2 border-r border-primary-light/20 align-top">
                     <input
@@ -140,12 +152,12 @@ export function ResearchCategoryTable({
                     />
                   </td>
 
-                  {/* Summary Column */}
+                  {/* Summary Column - Use description as placeholder */}
                   <td className="px-3 py-2 border-r border-primary-light/20 align-top">
                     <textarea
-                      rows={2}
-                      className="w-full px-2 py-1.5 border border-primary-light/30 rounded text-sm resize-y focus:outline-none focus:ring-2 focus:ring-primary bg-white min-h-[50px]"
-                      placeholder="概要を入力"
+                      rows={4} // <--- [1] Tăng số này lên (ví dụ: 4) để ô cao hơn mặc định
+                      className="w-full px-2 py-1.5 border border-primary-light/30 rounded text-sm resize-y focus:outline-none focus:ring-2 focus:ring-primary bg-white min-h-[100px]" // <--- [2] Tăng min-h-[50px] lên min-h-[100px] nếu muốn
+                      placeholder={description || "概要を入力"}
                       value={item.summary}
                       onChange={(e) =>
                         onRowChange(idx, "summary", e.target.value)

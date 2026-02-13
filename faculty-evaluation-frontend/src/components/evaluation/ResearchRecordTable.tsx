@@ -4,7 +4,6 @@ import React, { useState, useRef } from "react";
 import {
   IconPlus,
   IconTrash,
-  IconFileDescription,
   IconChevronUp,
   IconChevronDown,
   IconUpload,
@@ -24,30 +23,14 @@ export interface ResearchRecordTableProps {
   role?: "faculty" | "manager" | "admin";
 }
 
-// --- Helper: Info Section ---
-function InfoSection({
-  data,
-  onUploadResume,
-  role,
-}: {
-  data: ResearchRecordData;
-  onUploadResume: () => void;
-  role: string;
-}) {
+// --- Helper: Info Section (Button Removed) ---
+function InfoSection({ data }: { data: ResearchRecordData }) {
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
       <div className="col-span-1 space-y-1">
         <div className="text-xs text-text-muted font-medium">氏名</div>
-        <div className="text-sm font-semibold text-text-primary bg-primary-lightest/50 px-3 py-2 rounded-lg border border-primary-light/30 flex justify-between items-center">
-          <span>{data.facultyInfo.name}</span>
-          <button
-            onClick={onUploadResume}
-            disabled={role !== "faculty"}
-            className="text-primary hover:text-primary-dark disabled:opacity-50 disabled:cursor-not-allowed"
-            title="履歴書登録"
-          >
-            <IconFileDescription size={18} />
-          </button>
+        <div className="text-sm font-semibold text-text-primary bg-primary-lightest/50 px-3 py-2 rounded-lg border border-primary-light/30">
+          {data.facultyInfo.name}
         </div>
       </div>
       <div className="space-y-1">
@@ -78,8 +61,7 @@ export function ResearchRecordTable({
   role = "faculty",
 }: ResearchRecordTableProps) {
   const config = RESEARCH_RECORD_CONFIG;
-  const resumeInputRef = useRef<HTMLInputElement>(null);
-  const csvInputRef = useRef<HTMLInputElement>(null); // Ref cho CSV chung (demo)
+  const csvInputRef = useRef<HTMLInputElement>(null);
   const [showInstructions, setShowInstructions] = useState(false);
 
   // --- STATE MANAGEMENT ---
@@ -87,7 +69,7 @@ export function ResearchRecordTable({
   // 1. Education Records State
   const [educationState, setEducationState] = useState(() =>
     data.educationRecords.map((rec) => {
-      // Logic: Nếu không có item nào, tạo sẵn 1 dòng rỗng
+      // Logic: Ensure at least 1 empty row if items are empty
       const items =
         rec.items.length > 0
           ? rec.items.map((item) => ({
@@ -118,21 +100,23 @@ export function ResearchRecordTable({
           id: Math.random().toString(36).substr(2, 9),
           date: existingData.date || "",
           summary: existingData.summary || "",
+          title: "", // Initialize title for existing data
         });
       }
 
-      // FIX: Luôn đảm bảo có ít nhất 1 dòng trống nếu dữ liệu rỗng
+      // Ensure at least 1 empty row if empty
       if (initialItems.length === 0) {
         initialItems.push({
           id: Math.random().toString(36).substr(2, 9),
           date: "",
           summary: "",
+          title: "", // Initialize title
         });
       }
 
       return {
         category: cfg.category,
-        description: cfg.description,
+        description: cfg.description, // Will be passed as placeholder
         items: initialItems,
       };
     });
@@ -144,7 +128,6 @@ export function ResearchRecordTable({
       ...pub,
       id: Math.random().toString(36).substr(2, 9),
     }));
-    // Cũng tạo sẵn 1 dòng nếu rỗng (tuỳ chọn, nhưng đồng bộ thì nên có)
     if (pubs.length === 0) {
       pubs.push({
         id: Math.random().toString(36).substr(2, 9),
@@ -160,19 +143,8 @@ export function ResearchRecordTable({
 
   // --- HANDLERS ---
 
-  // Resume & CSV
-  const handleUploadResumeClick = () => resumeInputRef.current?.click();
-  const handleResumeFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      alert(`履歴書「${file.name}」をアップロードしました。`);
-      if (resumeInputRef.current) resumeInputRef.current.value = "";
-    }
-  };
-
   const handleImportCSVClick = () => csvInputRef.current?.click();
   const handleCSVFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Đây là demo, thực tế cần logic parse CSV và add vào bảng tương ứng
     const file = e.target.files?.[0];
     if (file) {
       alert(`CSV「${file.name}」を取り込みました（デモ）。`);
@@ -180,14 +152,11 @@ export function ResearchRecordTable({
     }
   };
 
-  // Section 1: Education Handlers (FIXED MUTATION BUG)
+  // Section 1: Education Handlers
   const handleEducationAddRow = (catIndex: number, count: number) => {
     setEducationState((prev) => {
-      // Map qua mảng cũ để tạo mảng mới, KHÔNG mutate trực tiếp
       return prev.map((cat, idx) => {
-        if (idx !== catIndex) return cat; // Giữ nguyên các category khác
-
-        // Tạo mảng items mới cho category cần sửa
+        if (idx !== catIndex) return cat;
         const newItems = Array(count)
           .fill(null)
           .map(() => ({
@@ -196,7 +165,6 @@ export function ResearchRecordTable({
             summary: "",
             title: "",
           }));
-
         return { ...cat, items: [...cat.items, ...newItems] };
       });
     });
@@ -227,20 +195,19 @@ export function ResearchRecordTable({
     });
   };
 
-  // Section 2: Job Handlers (FIXED MUTATION BUG)
+  // Section 2: Job Handlers
   const handleJobAddRow = (catIndex: number, count: number) => {
     setJobState((prev) => {
       return prev.map((cat, idx) => {
         if (idx !== catIndex) return cat;
-
         const newItems = Array(count)
           .fill(null)
           .map(() => ({
             id: Math.random().toString(36).substr(2, 9),
             date: "",
             summary: "",
+            title: "", // Ensure new rows have title
           }));
-
         return { ...cat, items: [...cat.items, ...newItems] };
       });
     });
@@ -309,14 +276,6 @@ export function ResearchRecordTable({
     <div className="space-y-8">
       <PageHeader title={config.title} year={data.year} />
 
-      {/* Hidden Inputs */}
-      <input
-        type="file"
-        ref={resumeInputRef}
-        className="hidden"
-        accept=".pdf,.doc,.docx"
-        onChange={handleResumeFileChange}
-      />
       <input
         type="file"
         ref={csvInputRef}
@@ -325,8 +284,7 @@ export function ResearchRecordTable({
         onChange={handleCSVFileChange}
       />
 
-      {/* Instructions */}
-      {/* <div className="border border-primary-light/30 rounded-lg overflow-hidden bg-white shadow-sm mb-6">
+      <div className="border border-primary-light/30 rounded-lg overflow-hidden bg-white shadow-sm mb-6">
         <button
           onClick={() => setShowInstructions(!showInstructions)}
           className="w-full flex items-center justify-between p-4 bg-background-subtle hover:bg-primary-light/10 transition-colors"
@@ -350,13 +308,9 @@ export function ResearchRecordTable({
             </div>
           </div>
         )}
-      </div> */}
+      </div>
 
-      <InfoSection
-        data={data}
-        onUploadResume={handleUploadResumeClick}
-        role={role}
-      />
+      <InfoSection data={data} />
 
       {/* --- Section 1: 教育上の能力 --- */}
       <div className="space-y-2">
@@ -368,6 +322,10 @@ export function ResearchRecordTable({
             key={idx}
             title={cat.category}
             items={cat.items}
+            // For Section 1, we don't have a long description in config, just placeholder.
+            // We can pass the placeholder from config if needed, or leave description empty.
+            // Assuming default summary placeholder is fine or we want specific one.
+            description={config.educationItems[idx]?.placeholder}
             onAddRow={(count) => handleEducationAddRow(idx, count)}
             onRemoveRow={(rowIdx) => handleEducationRemoveRow(idx, rowIdx)}
             onRowChange={(rowIdx, field, val) =>
@@ -388,7 +346,7 @@ export function ResearchRecordTable({
           <ResearchCategoryTable
             key={idx}
             title={cat.category}
-            description={cat.description}
+            description={cat.description} // Pass description to be used as placeholder
             items={cat.items}
             onAddRow={(count) => handleJobAddRow(idx, count)}
             onRemoveRow={(rowIdx) => handleJobRemoveRow(idx, rowIdx)}
@@ -411,7 +369,6 @@ export function ResearchRecordTable({
           padding="none"
           className="rounded-none overflow-visible border-primary/20"
         >
-          {/* Header Gradient Style */}
           <div className="sticky top-0 z-10 bg-gradient-to-r from-primary-dark to-primary border-b border-primary-light/20 p-3 flex items-center justify-between shadow-md">
             <h4 className="font-bold text-white text-sm">著書・論文リスト</h4>
             {role === "faculty" && (
